@@ -8,7 +8,7 @@ const emptyForm = { name: '', email: '', age: '' };
 export default function HomePage() {
   const [users, setUsers] = useState<User[]>([]);
   const [form, setForm] = useState(emptyForm);
-  const [editingId, setEditingId] = useState<string | null>(null); // null = adding a new user
+  const [editingId, setEditingId] = useState<number | null>(null); // null = adding a new user
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -52,7 +52,7 @@ export default function HomePage() {
 
   // Fill the form with a user's data so it can be edited
   function startEdit(user: User) {
-    setEditingId(user._id);
+    setEditingId(user.id);
     setForm({ name: user.name, email: user.email, age: String(user.age) });
     setError('');
   }
@@ -67,7 +67,7 @@ export default function HomePage() {
   async function handleDelete(user: User) {
     if (!confirm(`Delete ${user.name}?`)) return;
     try {
-      await deleteUser(user._id);
+      await deleteUser(user.id);
       await loadUsers();
     } catch (err) {
       setError((err as Error).message);
@@ -80,7 +80,7 @@ export default function HomePage() {
 
       {/* ---------- Form: add or edit ---------- */}
       <form onSubmit={handleSubmit} className="mb-8 space-y-3 rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold">{editingId === null ? 'Add user' : 'Edit user'}</h2>
+        <h2 className="text-lg font-semibold">{editingId === null ? 'Add user' : `Edit user #${editingId}`}</h2>
 
         <input
           className="w-full rounded border border-gray-300 px-3 py-2"
@@ -131,6 +131,7 @@ export default function HomePage() {
         <table className="w-full overflow-hidden rounded-lg border border-gray-200 bg-white text-left shadow-sm">
           <thead className="bg-gray-100">
             <tr>
+              <th className="p-3">ID</th>
               <th className="p-3">Name</th>
               <th className="p-3">Email</th>
               <th className="p-3">Age</th>
@@ -139,7 +140,8 @@ export default function HomePage() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user._id} className="border-t border-gray-200">
+              <tr key={user.id} className="border-t border-gray-200">
+                <td className="p-3">{user.id}</td>
                 <td className="p-3">{user.name}</td>
                 <td className="p-3">{user.email}</td>
                 <td className="p-3">{user.age}</td>

@@ -1,6 +1,6 @@
 # Frontend (Next.js)
 
-A simple users CRUD page that talks to the NestJS REST API (MongoDB Atlas).
+A simple users CRUD page that talks to the NestJS REST API (Supabase).
 
 ```bash
 npm install

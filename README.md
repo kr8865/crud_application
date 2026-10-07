@@ -1,4 +1,4 @@
-# Users CRUD: NestJS + MongoDB Atlas + Next.js
+# Users CRUD: NestJS + Supabase (PostgreSQL) + Next.js
 
 ```
 form/
@@ -9,9 +9,9 @@ form/
 ## How a request flows
 1. **Browser (Next.js `page.tsx`)**: you click "Add". `createUser()` in `lib/api.ts` sends `POST http://localhost:4000/users` with JSON `{name, email, age}`.
 2. **NestJS controller (`users.controller.ts`)**: `@Post()` receives it, and `ValidationPipe` checks the body against `CreateUserDto`. Bad data gets an automatic 400 response.
-3. **NestJS service (`users.service.ts`)**: business logic, e.g. "is this email already used?" (if yes, 409). It calls the Mongoose model.
-4. **Mongoose + MongoDB Atlas**: `userModel.create()` inserts a document into the `users` collection in your Atlas cluster.
-5. The saved user (with its `_id`) is returned as JSON, and the page reloads the list.
+3. **NestJS service (`users.service.ts`)**: business logic, e.g. "is this email already used?" (if yes, 409). It calls the TypeORM repository.
+4. **TypeORM + Supabase**: `repository.save()` becomes `INSERT INTO users ...` in your Supabase PostgreSQL database.
+5. The saved user (with its `id`) is returned as JSON, and the page reloads the list.
 
 ## REST API
 | Method | URL | Body | What it does |
@@ -22,10 +22,10 @@ form/
 | PATCH | /users/:id | any of `name`, `email`, `age` | update |
 | DELETE | /users/:id | | delete |
 
-`:id` is MongoDB's `_id`, e.g. `6650f1c2a1b2c3d4e5f60718`.
+`:id` is the user's number, e.g. `/users/3`.
 
 ## Run it
-**0. MongoDB Atlas**: under **Network Access**, add your current IP address. Then fill in `backend/.env` (see `.env.example`).
+**0. Supabase**: copy the connection string (Connect > Connection String > URI > Session pooler) into `backend/.env` as `DATABASE_URL` (see `.env.example`).
 
 **1. Backend**
 ```bash
@@ -39,4 +39,4 @@ cd frontend
 npm install
 npm run dev              # open http://localhost:3000
 ```
-You can see the data in Atlas under **Browse Collections → formdb → users**.
+You can see the data in Supabase under **Table Editor → users**.

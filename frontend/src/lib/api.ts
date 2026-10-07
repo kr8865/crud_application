@@ -2,13 +2,13 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export type User = {
-  _id: string; // MongoDB's unique id
+  id: number;
   name: string;
   email: string;
   age: number;
 };
 
-// The data we send when creating/updating (no _id - MongoDB creates it).
+// The data we send when creating/updating (no id - the database creates it).
 export type UserInput = Pick<User, 'name' | 'email' | 'age'>;
 
 // Small helper: call the API and throw a readable error if it fails.
@@ -28,5 +28,5 @@ async function request(path: string, method = 'GET', body?: UserInput) {
 
 export const getUsers = (): Promise<User[]> => request('/users');
 export const createUser = (user: UserInput): Promise<User> => request('/users', 'POST', user);
-export const updateUser = (id: string, user: UserInput): Promise<User> => request(`/users/${id}`, 'PATCH', user);
-export const deleteUser = (id: string): Promise<User> => request(`/users/${id}`, 'DELETE');
+export const updateUser = (id: number, user: UserInput): Promise<User> => request(`/users/${id}`, 'PATCH', user);
+export const deleteUser = (id: number): Promise<User> => request(`/users/${id}`, 'DELETE');
